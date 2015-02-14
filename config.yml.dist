@@ -1,0 +1,8 @@
+source:
+    adapter: pdo
+    database: networker
+    username: root
+    password:
+    # host: localhost
+    # socket: /tmp/mysql.sock
+    # filepath:
