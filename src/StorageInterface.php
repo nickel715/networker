@@ -5,5 +5,6 @@ namespace Networker;
 interface StorageInterface
 {
     public function findAll();
-    public function create(User $user);
+    public function add($user);
+    public function addAll(array $users);
 }
