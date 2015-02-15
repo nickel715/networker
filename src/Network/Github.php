@@ -36,7 +36,11 @@ class Github implements ImportInterface, ExportInterface
     {
         $client = clone $this->httpClient;
         $client->setUri($this->baseUrl . 'users/' . $username);
-        return $client->send()->isSuccess();
+        $response = $client->send();
+        if (!($response->isSuccess() || $response->getStatusCode() == 404)) {
+            throw new \Exception('Unexpected response ' . $response->getStatusCode() . ' ' . $response->getBody());
+        }
+        return $response->isSuccess();
     }
 
     private function fetchUsers($type, $username)

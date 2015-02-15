@@ -87,4 +87,12 @@ class GithubTest extends \PHPUnit_Framework_TestCase
             [404, false],
         ];
     }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testUserExistsThrowExceptionOnForbidden()
+    {
+        $this->testUserExists(403, false);
+    }
 }
