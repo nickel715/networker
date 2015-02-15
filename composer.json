@@ -11,7 +11,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "zendframework/zend-http": "2.3.*"
+        "zendframework/zend-http": "2.3.*",
+        "ricardoper/twitteroauth": "2.1.*"
     },
     "require-dev": {
         "phpunit/phpunit": "4.4.*",
