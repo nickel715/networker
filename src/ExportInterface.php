@@ -4,5 +4,5 @@ namespace Networker;
 
 interface ExportInterface extends NetworkInterface
 {
-    public function userExists($user);
+    public function userExists($username);
 }

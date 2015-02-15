@@ -10,7 +10,6 @@ use Zend\Http\Response;
 class Github implements ImportInterface, ExportInterface
 {
     private $httpClient;
-    private $username;
     private $baseUrl = 'https://api.github.com/';
 
     public function getName()
@@ -18,30 +17,27 @@ class Github implements ImportInterface, ExportInterface
         return 'Github';
     }
 
-    public function getAll()
+    public function getAll($username)
     {
         if (!($this->httpClient instanceof HttpClient)) {
             throw new \Exception('Zend\Http\Client required');
         }
-        $followers = $this->fetchUsers('followers');
-        $following = $this->fetchUsers('following');
+        $followers = $this->fetchUsers('followers', $username);
+        $following = $this->fetchUsers('following', $username);
         return array_merge($followers, $following);
     }
 
     public function userExists($username = null)
     {
-        if (!is_string($username)) {
-            $username = $this->username;
-        }
         $client = clone $this->httpClient;
         $client->setUri($this->baseUrl . 'users/' . $username);
         return $client->send()->isSuccess();
     }
 
-    private function fetchUsers($type)
+    private function fetchUsers($type, $username)
     {
         $client = clone $this->httpClient;
-        $client->setUri($this->baseUrl . 'users/' . $this->username . '/' . $type);
+        $client->setUri($this->baseUrl . 'users/' . $username . '/' . $type);
         $response = $client->send();
         return $this->extractUsers($response);
     }
@@ -59,10 +55,5 @@ class Github implements ImportInterface, ExportInterface
     public function setHttpClient(HttpClient $httpClient)
     {
         $this->httpClient = $httpClient;
-    }
-
-    public function setUsername($username)
-    {
-        $this->username = $username;
     }
 }

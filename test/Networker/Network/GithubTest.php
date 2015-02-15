@@ -29,7 +29,7 @@ class GithubTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecptionIfClientMissing()
     {
-        $this->sut->getAll();
+        $this->sut->getAll('octocat');
     }
 
     public function testGetAll()
@@ -51,8 +51,7 @@ class GithubTest extends \PHPUnit_Framework_TestCase
             ->will($this->onConsecutiveCalls($responseFollowers, $responseFollowing));
 
         $this->sut->setHttpClient($clientMock);
-        $this->sut->setUsername('octocat');
-        $actual = $this->sut->getAll();
+        $actual = $this->sut->getAll('octocat');
 
         $expected = ['tekkub','mdo','charliesome','benbalter','muan','jlord'];
         $this->assertEquals($expected, $actual);
@@ -73,8 +72,7 @@ class GithubTest extends \PHPUnit_Framework_TestCase
             ->willReturn((new Response)->setStatusCode($statusCode));
 
         $this->sut->setHttpClient($clientMock);
-        $this->sut->setUsername('octocat');
-        $this->assertEquals($expected, $this->sut->userExists());
+        $this->assertEquals($expected, $this->sut->userExists('octocat'));
     }
 
     public function provideUserExists()
@@ -83,20 +81,5 @@ class GithubTest extends \PHPUnit_Framework_TestCase
             [200, true],
             [404, false],
         ];
-    }
-
-    public function testUserExistsWithParam()
-    {
-        $clientMock = $this->getClientMock();
-        $clientMock->expects($this->once())
-            ->method('setUri')
-            ->with('https://api.github.com/users/octocat');
-
-        $clientMock->expects($this->once())
-            ->method('send')
-            ->willReturn(new Response);
-
-        $this->sut->setHttpClient($clientMock);
-        $this->sut->userExists('octocat');
     }
 }
