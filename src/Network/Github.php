@@ -3,13 +3,15 @@
 namespace Networker\Network;
 
 use Networker\ImportInterface;
+use Networker\ExportInterface;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Response;
 
-class Github implements ImportInterface
+class Github implements ImportInterface, ExportInterface
 {
     private $httpClient;
     private $username;
+    private $baseUrl = 'https://api.github.com/';
 
     public function getName()
     {
@@ -26,11 +28,20 @@ class Github implements ImportInterface
         return array_merge($followers, $following);
     }
 
+    public function userExists($username = null)
+    {
+        if (!is_string($username)) {
+            $username = $this->username;
+        }
+        $client = clone $this->httpClient;
+        $client->setUri($this->baseUrl . 'users/' . $username);
+        return $client->send()->isSuccess();
+    }
+
     private function fetchUsers($type)
     {
-        $baseUrl = 'https://api.github.com/users/';
         $client = clone $this->httpClient;
-        $client->setUri($baseUrl . $this->username . '/' . $type);
+        $client->setUri($this->baseUrl . 'users/' . $this->username . '/' . $type);
         $response = $client->send();
         return $this->extractUsers($response);
     }

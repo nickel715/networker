@@ -13,6 +13,11 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $this->sut = new Github;
     }
 
+    protected function getClientMock()
+    {
+        return $this->getMock('Zend\Http\Client', ['setUri', 'send']);
+    }
+
     public function testGetName()
     {
         $this->assertEquals('Github', $this->sut->getName());
@@ -29,7 +34,7 @@ class GithubTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAll()
     {
-        $clientMock = $this->getMock('Zend\Http\Client', ['setUri', 'send']);
+        $clientMock = $this->getClientMock();
         $clientMock->expects($this->exactly(2))
             ->method('setUri')
             ->withConsecutive(
@@ -48,7 +53,50 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $this->sut->setHttpClient($clientMock);
         $this->sut->setUsername('octocat');
         $actual = $this->sut->getAll();
+
         $expected = ['tekkub','mdo','charliesome','benbalter','muan','jlord'];
         $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @dataProvider provideUserExists
+     */
+    public function testUserExists($statusCode, $expected)
+    {
+        $clientMock = $this->getClientMock();
+        $clientMock->expects($this->once())
+            ->method('setUri')
+            ->with('https://api.github.com/users/octocat');
+
+        $clientMock->expects($this->once())
+            ->method('send')
+            ->willReturn((new Response)->setStatusCode($statusCode));
+
+        $this->sut->setHttpClient($clientMock);
+        $this->sut->setUsername('octocat');
+        $this->assertEquals($expected, $this->sut->userExists());
+    }
+
+    public function provideUserExists()
+    {
+        return [
+            [200, true],
+            [404, false],
+        ];
+    }
+
+    public function testUserExistsWithParam()
+    {
+        $clientMock = $this->getClientMock();
+        $clientMock->expects($this->once())
+            ->method('setUri')
+            ->with('https://api.github.com/users/octocat');
+
+        $clientMock->expects($this->once())
+            ->method('send')
+            ->willReturn(new Response);
+
+        $this->sut->setHttpClient($clientMock);
+        $this->sut->userExists('octocat');
     }
 }
