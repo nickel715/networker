@@ -17,6 +17,11 @@ class Github implements ImportInterface, ExportInterface
         return 'Github';
     }
 
+    public function getUserLink($username)
+    {
+        return 'https://github.com/' . $username;
+    }
+
     public function getAll($username)
     {
         if (!($this->httpClient instanceof HttpClient)) {

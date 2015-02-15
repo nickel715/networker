@@ -22,6 +22,11 @@ class TwitterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Twitter', $this->sut->getName());
     }
 
+    public function testGetUserLink()
+    {
+        $this->assertEquals('https://twitter.com/theSeanCook', $this->sut->getUserLink('theSeanCook'));
+    }
+
     /**
      * @expectedException Exception
      * @expectedExceptionMessage Twitter required

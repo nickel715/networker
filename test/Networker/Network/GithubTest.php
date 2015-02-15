@@ -23,6 +23,11 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Github', $this->sut->getName());
     }
 
+    public function testGetUserLink()
+    {
+        $this->assertEquals('https://github.com/octocat', $this->sut->getUserLink('octocat'));
+    }
+
     /**
      * @expectedException Exception
      * @expectedExceptionMessage Client required

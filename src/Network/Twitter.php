@@ -16,6 +16,11 @@ class Twitter implements ImportInterface, ExportInterface
         return 'Twitter';
     }
 
+    public function getUserLink($username)
+    {
+        return 'https://twitter.com/' . $username;
+    }
+
     public function getAll($username)
     {
         if (!($this->twitter instanceof SingleUserAuth)) {
