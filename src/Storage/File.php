@@ -15,7 +15,10 @@ class File implements StorageInterface
 
     public function findAll()
     {
-        return array_filter(explode(PHP_EOL, file_get_contents($this->path)));
+        $all = explode(PHP_EOL, file_get_contents($this->path));
+        $all = array_filter($all);
+        $all = array_unique($all);
+        return $all;
     }
 
     public function add($user)

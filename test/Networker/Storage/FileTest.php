@@ -57,4 +57,10 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->sut->addAll($this->userList);
         $this->assertEquals($this->userListRaw, file_get_contents($this->file));
     }
+
+    public function testFindAllNoDuplicates()
+    {
+        file_put_contents($this->file, $this->userListRaw . 'octocat' . PHP_EOL);
+        $this->assertEquals($this->userList, $this->sut->findAll());
+    }
 }
