@@ -10,7 +10,7 @@ use Zend\Http\Response;
 class Github implements ImportInterface, ExportInterface
 {
     private $httpClient;
-    private $baseUrl = 'https://api.github.com/';
+    private $baseUrl = 'https://api.github.com';
 
     public function getName()
     {
@@ -35,7 +35,7 @@ class Github implements ImportInterface, ExportInterface
     public function userExists($username = null)
     {
         $client = clone $this->httpClient;
-        $client->setUri($this->baseUrl . 'users/' . $username);
+        $client->setUri($this->baseUrl . '/users/' . $username);
         $response = $client->send();
         if (!($response->isSuccess() || $response->getStatusCode() == 404)) {
             throw new \Exception('Unexpected response ' . $response->getStatusCode() . ' ' . $response->getBody());
@@ -46,7 +46,7 @@ class Github implements ImportInterface, ExportInterface
     private function fetchUsers($type, $username)
     {
         $client = clone $this->httpClient;
-        $client->setUri($this->baseUrl . 'users/' . $username . '/' . $type);
+        $client->setUri($this->baseUrl . '/users/' . $username . '/' . $type);
         $response = $client->send();
         return $this->extractUsers($response);
     }
